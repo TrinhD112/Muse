@@ -28,6 +28,10 @@ export async function GET(request: NextRequest) {
     request.nextUrl.searchParams.get("q") || ""
   ).trim().slice(0, 100);
 
+  const genre = (
+  request.nextUrl.searchParams.get("genre") || ""
+).trim().slice(0, 40);
+
   const params = new URLSearchParams({
   client_id: clientId,
   format: "json",
@@ -36,11 +40,17 @@ export async function GET(request: NextRequest) {
   audioformat: "mp31",
 });
 
-  if (query) {
-    params.set("search", query);
-  } else {
-    params.set("order", "popularity_week");
-  }
+if (query) {
+  params.set("search", query);
+}
+
+if (genre) {
+  params.set("tags", genre);
+}
+
+if (!query) {
+  params.set("order", "popularity_week");
+}
 
   try {
     const response = await fetch(
